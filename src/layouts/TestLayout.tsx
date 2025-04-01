@@ -20,7 +20,6 @@ const StyledHeader = styled.div`
   height: 50px;
   flex: 0 0 50px;
   width: 100%;
-  background-color: tomato;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -30,7 +29,6 @@ const StyledHeader = styled.div`
 const StyledContent = styled.div`
   flex: 1;
   overflow-y: auto;
-  background-color: orange;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -41,12 +39,62 @@ const StyledInputContainer = styled.div`
   width: 100%;
   height: 50px;
   flex: 0 0 50px;
-  background-color: lime;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 0 6px;
+  padding: 0 16px;
+`;
+
+// Action buttons container styling
+const ActionButtonsContainer = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 8px 16px;
+  justify-content: space-between;
+`;
+
+const LeftButtonGroup = styled.div`
+  display: flex;
+  gap: 12px;
+`;
+
+const RightButtonGroup = styled.div`
+  display: flex;
+`;
+
+const IconButton = styled.button`
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+
+  &:active {
+    background-color: #d0d0d0;
+  }
+`;
+
+const SendButton = styled(IconButton)`
+  background-color: #1976d2;
+  color: white;
+
+  &:hover {
+    background-color: #1565c0;
+  }
+
+  &:active {
+    background-color: #0d47a1;
+  }
 `;
 
 export function TestLayout() {
@@ -82,6 +130,16 @@ export function TestLayout() {
           }}
         />
       </StyledInputContainer>
+      <ActionButtonsContainer>
+        <LeftButtonGroup>
+          <IconButton aria-label="Attach file">📎</IconButton>
+          <IconButton aria-label="Voice dictation">🎤</IconButton>
+          <IconButton aria-label="Take photo">📷</IconButton>
+        </LeftButtonGroup>
+        <RightButtonGroup>
+          <SendButton aria-label="Send message">➤</SendButton>
+        </RightButtonGroup>
+      </ActionButtonsContainer>
     </StyledContainer>
   );
 }
