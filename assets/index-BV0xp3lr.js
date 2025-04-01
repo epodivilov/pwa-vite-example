@@ -192,4 +192,5 @@ Error generating stack: `+e.message+`
   justify-content: center;
   align-items: center;
   padding: 0 6px;
+  padding-bottom: env(safe-area-inset-bottom);
 `;function b1(){const[f,s]=rt.useState(""),h=h1(),[r,v]=rt.useState([window.innerWidth,window.innerHeight]);rt.useEffect(()=>{h&&v(h)},[h]);const T=D=>{s(D)};return Nt.jsxs(v1,{viewportSize:r,children:[Nt.jsx(m1,{children:"Header"}),Nt.jsx(g1,{children:"Content"}),Nt.jsx(S1,{children:Nt.jsx(a1,{value:f,onChange:T,placeholder:"Type something...",onBlur:()=>{v([window.innerWidth,window.innerHeight])}})})]})}function p1(){return Nt.jsxs(Nt.Fragment,{children:[Nt.jsx(Jv,{styles:kv}),Nt.jsx(b1,{})]})}av.createRoot(document.getElementById("root")).render(Nt.jsx(rt.StrictMode,{children:Nt.jsx(p1,{})}));
