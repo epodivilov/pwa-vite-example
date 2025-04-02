@@ -30,7 +30,5 @@ export const globalStyles = css`
     position: relative;
     overflow: hidden;
     overscroll-behavior: none;
-    /* Fix for iOS Safari */
-    /* height: -webkit-fill-available; */
   }
 `;

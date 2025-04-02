@@ -1,59 +1,86 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useEffect, KeyboardEvent, useState } from "react";
 import styled from "@emotion/styled";
 
-export interface TextInputProps {
-  value?: string;
-  onChange?: (value: string) => void;
+export interface MultilineTextInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onSubmit?: (value: string) => void;
   placeholder?: string;
-  label?: string;
   disabled?: boolean;
   error?: boolean;
   helperText?: string;
   onFocus?: () => void;
   onBlur?: () => void;
-  onSubmit?: (value: string) => void;
 }
 
-export function TextInput({
-  value = "",
+const isDesktop = () => {
+  // Simple check to determine if we're on desktop or mobile
+  // Better approach would use a proper library, but this works for basic cases
+  return window.innerWidth >= 768;
+};
+
+export function MultilineTextInput({
+  value,
   onChange,
   onSubmit,
   placeholder = "",
-  label,
   disabled = false,
   error,
   helperText,
   onFocus,
   onBlur,
-}: TextInputProps) {
+}: MultilineTextInputProps) {
   const [focused, setFocused] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const hiddenInputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const visualValueRef = useRef<HTMLDivElement>(null);
+  const [desktop, setDesktop] = useState(isDesktop());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDesktop(isDesktop());
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Auto-adjust height based on content
+    if (visualValueRef.current) {
+      visualValueRef.current.style.height = "auto";
+      visualValueRef.current.style.height = `${visualValueRef.current.scrollHeight}px`;
+    }
+  }, [value]);
 
   const handleFocus = () => {
     setFocused(true);
     onFocus?.();
   };
+
   const handleBlur = () => {
     setFocused(false);
     onBlur?.();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.(e.target.value);
-  };
-
-  const handleSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      onSubmit?.(e.currentTarget.value);
-    }
+    onChange(e.target.value);
   };
 
   const handleContainerClick = () => {
-    inputRef.current?.focus();
+    hiddenInputRef.current?.focus();
   };
 
-  const isLabelFloating = focused || value.length > 0;
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (desktop && e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (value.trim() && onSubmit) {
+        onSubmit(value);
+      }
+    }
+  };
 
   return (
     <InputContainer
@@ -62,11 +89,15 @@ export function TextInput({
       disabled={disabled}
       error={error}
     >
-      {label && (
-        <InputLabel floating={isLabelFloating} error={error}>
-          {label}
-        </InputLabel>
-      )}
+      <HiddenInput
+        ref={hiddenInputRef}
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        disabled={disabled}
+      />
 
       <InputVisual>
         {value || focused ? (
@@ -77,16 +108,6 @@ export function TextInput({
         ) : placeholder ? (
           <InputPlaceholder>{placeholder}</InputPlaceholder>
         ) : null}
-
-        <HiddenInput
-          ref={inputRef}
-          value={value}
-          onChange={handleChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={handleSubmit}
-          disabled={disabled}
-        />
       </InputVisual>
 
       {helperText && <HelperText error={error}>{helperText}</HelperText>}
@@ -97,12 +118,12 @@ export function TextInput({
 const InputContainer = styled.div<{ disabled?: boolean; error?: boolean }>`
   position: relative;
   width: 100%;
-  padding: 8px 12px;
   background-color: ${({ disabled }) => (disabled ? "#f5f5f5" : "white")};
-  border-radius: 4px;
+  border-radius: 20px;
   border: 1px solid ${({ error }) => (error ? "#d32f2f" : "#ced4da")};
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "text")};
+  padding: 12px 16px;
 
   &:hover {
     border-color: ${({ error, disabled }) => {
@@ -115,39 +136,32 @@ const InputContainer = styled.div<{ disabled?: boolean; error?: boolean }>`
     border-color: ${({ error }) => (error ? "#d32f2f" : "#8456b1")};
     box-shadow: 0 0 0 2px
       ${({ error }) =>
-        error ? "rgba(211, 47, 47, 0.2)" : "rgba(25, 118, 210, 0.2)"};
+        error ? "rgba(211, 47, 47, 0.2)" : "rgba(132, 86, 177, 0.2)"};
   }
 `;
 
 const InputVisual = styled.div`
   position: relative;
   min-height: 24px;
-  display: flex;
-  align-items: center;
-`;
-
-const InputLabel = styled.label<{ floating: boolean; error?: boolean }>`
-  position: absolute;
-  left: 0;
-  color: ${({ floating, error }) => {
-    if (error) return "#d32f2f";
-    return floating ? "#8456b1" : "#666";
-  }};
-  font-size: ${({ floating }) => (floating ? "12px" : "16px")};
-  transform: ${({ floating }) =>
-    floating ? "translateY(-16px)" : "translateY(0)"};
-  transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
-  pointer-events: none;
+  max-height: 150px;
+  overflow-y: auto;
 `;
 
 const InputValueContainer = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 `;
 
-const InputValue = styled.span`
+const InputValue = styled.div`
   font-size: 16px;
+  line-height: 1.5;
   color: #000;
+  background: transparent;
+  white-space: pre-wrap;
+  word-break: break-word;
+  width: 100%;
+  min-height: 24px;
+  cursor: text;
 `;
 
 const InputPlaceholder = styled.span`

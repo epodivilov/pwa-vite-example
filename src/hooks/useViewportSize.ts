@@ -12,7 +12,7 @@ const getViewportSize = (): Size => {
   return [window.innerWidth, window.innerHeight] as const;
 };
 
-export const useViewportSize = (): Size | undefined => {
+export function useViewportSize(): [Size | undefined, (size: Size) => void] {
   const [viewportSize, setViewportSize] = useState<Size | undefined>();
 
   const updateViewportSize = useCallback(() => {
@@ -56,5 +56,5 @@ export const useViewportSize = (): Size | undefined => {
     };
   }, [updateViewportSize]);
 
-  return viewportSize;
-};
+  return [viewportSize, setViewportSize] as const;
+}
