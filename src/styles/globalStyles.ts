@@ -35,7 +35,7 @@ export const globalStyles = css`
   @media (prefers-color-scheme: dark) {
     html,
     body {
-      background-color: #1b1b1b;
+      background-color: #ff1b1b;
       color: #f6f6f7;
     }
   }
@@ -43,7 +43,7 @@ export const globalStyles = css`
   @media (prefers-color-scheme: light) {
     html,
     body {
-      background-color: #f3eff6;
+      background-color: #03efff;
       color: #303032;
     }
   }
