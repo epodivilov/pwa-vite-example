@@ -31,4 +31,20 @@ export const globalStyles = css`
     overflow: hidden;
     overscroll-behavior: none;
   }
+
+  @media (prefers-color-scheme: dark) {
+    html,
+    body {
+      background-color: #1b1b1b;
+      color: #f6f6f7;
+    }
+  }
+
+  @media (prefers-color-scheme: light) {
+    html,
+    body {
+      background-color: #f3eff6;
+      color: #303032;
+    }
+  }
 `;

@@ -22,8 +22,8 @@ export default defineConfig({
         name: "PWA Example",
         short_name: "PWA Example",
         description: "PWA Example",
-        theme_color: "#8456b1",
-        background_color: "#f3eff6",
+        theme_color: "#f3eff6",
+        background_color: "#f9f9f9",
 
         screenshots: [
           {
