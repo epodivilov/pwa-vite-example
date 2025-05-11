@@ -71,8 +71,8 @@ Error generating stack: `+e.message+`
     width: 100%;
     height: 100%;
     /* Add padding for iOS safe areas */
-    padding-top: env(safe-area-inset-top, 0);
-    padding-bottom: env(safe-area-inset-bottom, 0);
+    /* padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0); */
   }
 
   html,
@@ -293,6 +293,9 @@ Error generating stack: `+e.message+`
   max-height: ${({viewportSize:i})=>i?`${i[1]}px`:"100%"};
   transition: max-width 0.13s ease-in-out, max-height 0.13s ease-in-out;
   overflow: hidden;
+
+  padding-top: env(safe-area-inset-top, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
 
   @media (prefers-color-scheme: dark) {
     & {
