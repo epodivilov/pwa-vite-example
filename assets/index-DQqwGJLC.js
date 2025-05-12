@@ -335,7 +335,8 @@ Error generating stack: `+e.message+`
 `,Mv=dt.div`
   flex: 0 0 auto;
   overflow: hidden;
-  padding: 0 12px 12px 12px;
+  padding: 0 12px;
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
 `,Dv=dt.div`
   display: flex;
   width: 100%;
